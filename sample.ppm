@@ -1,0 +1,8 @@
+P3
+# the P3 means the colors are in ASCII, then 3 columns and 2 rows,
+# thn 255 for max color, then RGB triplets.
+# ppm stands for portable bitmap format
+3 2
+255
+255 0 0 0 255 0 0 0 255
+255 255 0 255 255 255 0 0 0
