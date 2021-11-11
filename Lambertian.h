@@ -1,7 +1,8 @@
 #ifndef LAMBERTIAN_H
 #define LAMBERTIAN_H
-# include "Ray.h"
-# include "Material.h"
+
+#include "Ray.h"
+#include "Material.h"
 
 class Lambertian: public Material {
     public:

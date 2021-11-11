@@ -1,7 +1,7 @@
 #ifndef HITABLE_H
 #define HITABLE_H
 
-# include "Ray.h"
+#include "Ray.h"
 
 class Material;
 

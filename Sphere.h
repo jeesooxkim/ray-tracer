@@ -1,7 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-# include "Hitable.h"
+#include "Hitable.h"
 
 class Material;
 
