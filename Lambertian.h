@@ -1,21 +1,21 @@
 #ifndef LAMBERTIAN_H
 #define LAMBERTIAN_H
-#include "Ray.h"
+# include "Ray.h"
+# include "Material.h"
 
 class Lambertian: public Material {
     public:
-        Lambertian() {}
-        Lambertian(float a) {
+        Lambertian(const Vec3& a) {
             albedo = a;
         }
-        virtual bool scatter(const Ray& ray, HitRecord& rec, Vec3& scattered) const;
+        virtual bool scatter(const Ray& ray, HitRecord& rec, Vec3& attenuation, Ray& scattered) const {
+            Vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+            scattered = Ray(rec.p, target-rec.p);
+            attenuation = albedo;
+            return true;
+        }
 
-        float albedo;
+        Vec3 albedo;
 };
-
-bool Lambertian::scatter(const Ray& ray, HitRecord& rec, Vec3& scattered) const {
-
-}
-
 
 #endif // LAMBERTIAN_H

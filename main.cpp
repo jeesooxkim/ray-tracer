@@ -1,34 +1,25 @@
 # include <iostream>
 # include <random>
 # include <math.h>
+# include <stdlib.h>
 # include "Sphere.h"
 # include "HitableList.h"
+# include "Lambertian.h"
 # include "Camera.h"
 
-Vec3 random_in_unit_sphere() {
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_real_distribution<> distribution(-1, 1);
-    Vec3 sample;
-    float testVal;
-
-    // TODO: i think there's a better structure for this
-    do {
-        sample = Vec3(distribution(rng), distribution(rng), distribution(rng));
-        // reject if not in unit sphere;
-        testVal = sample.x()*sample.x() + sample.y()*sample.y() + sample.z()*sample.z();
-    } while (testVal > 1);
-
-    return sample;
-}
-
-Vec3 color(const Ray& r, Hitable *world) {
+Vec3 color(const Ray& r, Hitable *world, int depth) {
     HitRecord rec;
 
     // 0.001 to solve shadow acne problem at floating point approx - ignore hits near zero
-    if (world->hit(r, 0.001, MAXFLOAT, rec)) { 
-        Vec3 target = rec.p + rec.normal  + random_in_unit_sphere();
-        return 0.5 * color(Ray(rec.p, target-rec.p), world);
+    if (world->hit(r, 0.001, MAXFLOAT, rec)) {
+        Ray scattered;
+        Vec3 attenuation;
+        if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+            return attenuation*color(scattered, world, depth + 1);
+        } else {
+            //??
+            return Vec3(0,0,0);
+        }
     }
 
     // background gradient color
@@ -50,8 +41,8 @@ int main() {
     int listSize = 2;
     Hitable* list[listSize];
 
-    list[0] = new Sphere(Vec3(0, 0, -1), 0.5);
-    list[1] = new Sphere(Vec3(0,-100.5, -1), 100);
+    list[0] = new Sphere(Vec3(0, 0, -1), 0.5, new Lambertian(Vec3(0.8, 0.3, 0.3)));
+    list[1] = new Sphere(Vec3(0,-100.5, -1), 100, new Lambertian(Vec3(0.8, 0.8, 0.0)));
     Hitable *world = new HitableList(list, listSize);
 
     // the rows are written out from top to bottom
@@ -66,7 +57,7 @@ int main() {
                 float u = float(i + distribution(rng)) / float(nx); // 0 - 1
                 float v = float(j + distribution(rng)) / float(ny); // 1 - 0
                 Ray r = cam.getRay(u, v); //ray that goes from origin to this screen
-                total += color(r, world); // shooting the ray to retrieve color
+                total += color(r, world, 0); // shooting the ray to retrieve color
             }
             // average color value
             Vec3 col = total / ns;
@@ -82,5 +73,11 @@ int main() {
 
             std::cout << ir << " " << ig << " " << ib << "\n";
         }
-    } 
+    }
+
+    // TODO: write to file, designated by commandline
+    // TODO: link to simple GUI
+
+    // call image viewer: feh -g 600x300 --auto-zoom
+    // system("feh -g 600x300 --auto-zoom -rSmtime ./output");
 }
