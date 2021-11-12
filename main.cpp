@@ -38,7 +38,14 @@ int main() {
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
     // set camera
-    Camera cam(Vec3(-2, 2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0), 20, float(nx)/float(ny));
+    Vec3 lookFrom = Vec3(3, 3, 2);
+    Vec3 lookAt = Vec3(0, 0, -1);
+    Vec3 upDirection = Vec3(0, 1, 0);
+    float fov = 20; // angle from top to bottom of viewport
+    float focalDist = (lookFrom - lookAt).length();
+    float aperture = 2.0;
+
+    Camera cam(lookFrom, lookAt, upDirection, fov, float(nx)/float(ny), aperture, focalDist);
 
     int listSize = 5;
     Hitable* list[listSize];

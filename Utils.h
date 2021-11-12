@@ -16,10 +16,20 @@ Vec3 random_in_unit_sphere() {
     do {
         sample = Vec3(distribution(rng), distribution(rng), distribution(rng));
         // reject if not in unit sphere;
-        testVal = sample.x()*sample.x() + sample.y()*sample.y() + sample.z()*sample.z();
-    } while (testVal > 1);
+    } while (dot(sample, sample) >= 1.0);
 
     return sample;
+}
+
+Vec3 randomInUnitDisk() {
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_real_distribution<> distribution(-1, 1);
+    Vec3 p;
+    do {
+        p = 2.0*Vec3(distribution(rng), distribution(rng), 0) - Vec3(1, 1, 0);
+    } while (dot(p,p) >= 1.0);
+    return p;
 }
 
 Vec3 reflect(const Vec3& v, const Vec3& n) {
