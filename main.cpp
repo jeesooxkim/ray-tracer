@@ -38,7 +38,7 @@ int main() {
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
     // set camera
-    Camera cam;
+    Camera cam(90, float(nx)/float(ny));
 
     int listSize = 5;
     Hitable* list[listSize];
