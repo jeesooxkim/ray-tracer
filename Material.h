@@ -6,7 +6,7 @@
 
 class Material {
     public:
-        virtual bool scatter(const Ray& ray, HitRecord& rec, Vec3& attenuation, Ray& scattered) const = 0;
+        virtual bool scatter(const Ray& ray, const HitRecord& rec, Vec3& attenuation, Ray& scattered) const = 0;
 };
 
 #endif // MATERIAL_H 

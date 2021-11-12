@@ -9,7 +9,7 @@ class Lambertian: public Material {
         Lambertian(const Vec3& a) {
             albedo = a;
         }
-        virtual bool scatter(const Ray& ray, HitRecord& rec, Vec3& attenuation, Ray& scattered) const {
+        virtual bool scatter(const Ray& ray, const HitRecord& rec, Vec3& attenuation, Ray& scattered) const {
             Vec3 target = rec.p + rec.normal + random_in_unit_sphere();
             scattered = Ray(rec.p, target-rec.p);
             attenuation = albedo;
