@@ -3,6 +3,10 @@ Ray tracing implementation based on Ray Tracing in One Weekend.
 
 # Run this code
 
+1. Compile: `g++ -o main main.cpp`
+2. Run and pipe into ppm file: `./main > image_name.ppm`
+3. View file: for MacOS  `open image_name.ppm`, for Windows `feh image_name.ppm`
+
 # Sample Output
 <img width="500" alt="IMG_3845" src="https://user-images.githubusercontent.com/69694889/219922180-37af69a7-bcb2-43b7-b29a-42a938e1b3fa.PNG">
 The final output of this project was the following image with spheres with randomized material and color.
