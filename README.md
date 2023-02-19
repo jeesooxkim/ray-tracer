@@ -9,7 +9,7 @@ Ray tracing implementation based on Ray Tracing in One Weekend.
 
 # Sample Output
 <img width="500" alt="IMG_3845" src="https://user-images.githubusercontent.com/69694889/219922180-37af69a7-bcb2-43b7-b29a-42a938e1b3fa.PNG">
-The final output of this project was the following image with spheres with randomized material and color.
+The final output of this project was the following image with spheres with randomized material and color. All output ppm files are included in the `output` folder of this repository, but are screenshotted here for convenience.
 
 ## Process Screenshots
 <img width="500" alt="Screenshot_20230119_084723" src="https://user-images.githubusercontent.com/69694889/219922201-59ef9a2b-c31a-4d2f-a6b1-f4deccce896f.PNG">
