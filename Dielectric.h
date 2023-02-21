@@ -35,9 +35,9 @@ class Dielectric: public Material {
             }
 
             if (drand48() < reflectProb) {
-                scattered = Ray(rec.p, reflected);
+                scattered = Ray(rec.p, reflected, ray.time());
             } else {
-                scattered = Ray(rec.p, refracted);
+                scattered = Ray(rec.p, refracted, ray.time());
             }
             return true;
         }

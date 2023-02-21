@@ -3,6 +3,7 @@
 # include <math.h>
 # include <stdlib.h>
 # include "Sphere.h"
+# include "MovingSphere.h"
 # include "HitableList.h"
 # include "Lambertian.h"
 # include "Metal.h"
@@ -30,32 +31,55 @@ Vec3 color(const Ray& r, Hitable *world, int depth) {
     return (1.0-t)*Vec3(1.0, 1.0, 1.0) + t*Vec3(0.5, 0.7, 1.0); // lerp of white and blue
 }
 
+Hitable* randomScene() {
+    int numObjects = 500;
+    Hitable** list = new Hitable*[numObjects+1];
+    int i = 1;
+
+    // generate "floor"
+    list[0] = new Sphere(Vec3(0, -1000, 0), 1000, new Lambertian(Vec3(0.5, 0.5, 0.5)));
+
+    // generate spheres with random material and color
+    for (int a = -11; a < 11; a++) {
+        for (int b = -11; b < 11; b++) {
+            float chooseMaterial = drand48();
+            Vec3 center(a + 0.9*drand48(), 0.2, b + 0.9*drand48());
+            if ((center - Vec3(4, 0.2, 0)).length() > 0.9) {
+                if (chooseMaterial < 0.8) {
+                    list[i++] = new MovingSphere(center, center+Vec3(0, 0.5*drand48(), 0), 0.0, 1.0, 0.2, new Lambertian(Vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48())));
+                } else if (chooseMaterial < 0.95) {
+                    list[i++] = new Sphere(center, 0.2, new Metal(Vec3(0.5*(1+drand48()), 0.5*(1+drand48()), 0.5*(1+drand48())), 0.5*drand48()));
+                } else {
+                    list[i++] = new Sphere(center, 0.2, new Dielectric(1.5));
+                }
+            }
+        }
+    }
+
+    list[i++] = new Sphere(Vec3(0, 1, 0), 1.0, new Dielectric(1.5));
+    list[i++] = new Sphere(Vec3(-4, 1, 0), 1.0, new Lambertian(Vec3(0.4, 0.2, 0.1)));
+    list[i++] = new Sphere(Vec3(4, 1, 0), 1.0, new Metal(Vec3(0.7, 0.6, 0.5), 0.0));
+
+    return new HitableList(list, i);
+}
+
 int main() {
     // say this is a 200x100 image (w x h)
-    int nx = 200; 
-    int ny = 100;
+    int nx = 700; 
+    int ny = 500;
     int ns = 50;
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
     // set camera
-    Vec3 lookFrom = Vec3(3, 3, 2);
-    Vec3 lookAt = Vec3(0, 0, -1);
+    Vec3 lookFrom = Vec3(13, 2, 3);
+    Vec3 lookAt = Vec3(0, 0, 0);
     Vec3 upDirection = Vec3(0, 1, 0);
     float fov = 20; // angle from top to bottom of viewport
-    float focalDist = (lookFrom - lookAt).length();
-    float aperture = 2.0;
+    float focalDist = 10.0;
+    float aperture = 0.0;
 
-    Camera cam(lookFrom, lookAt, upDirection, fov, float(nx)/float(ny), aperture, focalDist);
-
-    int listSize = 5;
-    Hitable* list[listSize];
-
-    list[0] = new Sphere(Vec3(0, 0, -1), 0.5, new Lambertian(Vec3(0.1, 0.2, 0.5)));
-    list[1] = new Sphere(Vec3(0, -100.5, -1), 100, new Lambertian(Vec3(0.8, 0.8, 0.0)));
-    list[2] = new Sphere(Vec3(1, 0, -1), 0.5, new Metal(Vec3(0.8, 0.6, 0.2), 0.0));
-    list[3] = new Sphere(Vec3(-1, 0, -1), 0.5, new Dielectric(1.5));
-    list[4] = new Sphere(Vec3(-1, 0, -1), -0.45, new Dielectric(1.5));
-    Hitable *world = new HitableList(list, listSize);
+    Camera cam(lookFrom, lookAt, upDirection, fov, float(nx)/float(ny), aperture, focalDist, 0.0, 1.0);
+    Hitable *world = randomScene();
 
     // the rows are written out from top to bottom
     for (int j = ny - 1; j >= 0; j--) { // -> 199, 198, 197 ... 0
@@ -71,6 +95,7 @@ int main() {
                 Ray r = cam.getRay(u, v); //ray that goes from origin to this screen
                 total += color(r, world, 0); // shooting the ray to retrieve color
             }
+
             // average color value
             Vec3 col = total / ns;
 

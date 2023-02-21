@@ -13,7 +13,7 @@ class Metal: public Material {
         virtual bool scatter(const Ray& ray, const HitRecord& rec, Vec3& attenuation, Ray& scattered) const {
             Vec3 reflected = reflect(unit_vector(ray.direction()), rec.normal);
             Vec3 fuzzed = reflected + fuzz*random_in_unit_sphere();
-            scattered = Ray(rec.p, fuzzed);
+            scattered = Ray(rec.p, fuzzed, ray.time());
             attenuation = albedo;
             return (dot(scattered.direction(), rec.normal) > 0);
         }
